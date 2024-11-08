@@ -1,0 +1,191 @@
+@startuml
+package "controllers" {
+    class ProductController {
+        + deleteProduct(Long)
+        + getAllProducts()
+        + updateProduct(Long, Product)
+        + getProductById(Long)
+        + createProduct()
+    }
+    class OrderController {
+        + buyProduct()
+        + getOrderDetailsById(Long)
+        + returnProduct()
+    }
+    class PaymentController {
+        + processPayment()
+    }
+    class CompanyController {
+        + getCompanyDetails()
+    }
+    class DeliveryController {
+        + getDeliveryDetails()
+        + getNonDeliveryDetails()
+    }
+    class ReviewController {
+        + getAllReviews()
+        + addReview()
+    }
+}
+
+package "repositories" {
+    interface ProductRepository
+    interface OrderRepository
+    interface PaymentRepository
+    interface CompanyRepository
+    interface DeliveryRepository
+    interface NonDeliveryRepository
+    interface ReviewRepository
+}
+
+package "impl" {
+    class ProductServiceImpl {
+        + deleteProduct(Long)
+        + getAllProducts()
+        + updateProduct(Long, Product)
+        + getProductById(Long)
+        + createProduct()
+    }
+    class OrderServiceImpl {
+        + buyProduct()
+        + returnProduct()
+        + getOrderDetailsById(Long)
+    }
+    class PaymentServiceImpl {
+        + processPayment()
+    }
+    class CompanyServiceImpl {
+        + getCompanyDetails()
+    }
+    class DeliveryServiceImpl {
+        + getDeliveryDetails()
+        + getNonDeliveryDetails()
+    }
+    class ReviewServiceImpl {
+        + addReview()
+        + getAllReviews()
+    }
+}
+
+package "services" {
+    interface ProductService {
+        + deleteProduct(Long)
+        + getAllProducts()
+        + updateProduct(Long, Product)
+        + getProductById(Long)
+        + createProduct()
+    }
+    interface OrderService {
+        + buyProduct()
+        + returnProduct()
+        + getOrderDetailsById(Long)
+    }
+    interface PaymentService {
+        + processPayment()
+    }
+    interface CompanyService {
+        + getCompanyDetails()
+    }
+    interface DeliveryService {
+        + getDeliveryDetails()
+        + getNonDeliveryDetails()
+    }
+    interface ReviewService {
+        + addReview()
+        + getAllReviews()
+    }
+}
+
+package "models" {
+    class Product {
+        + id: Long
+        + name: String
+        + price: double
+        + description: String
+    }
+    class Order {
+        + id: Long
+        + orderDate: LocalDateTime
+        + product: Product
+        + payment: Payment
+    }
+    class Payment {
+        + id: Long
+        + amount: double
+        + paymentMethod: String
+    }
+    class Company {
+        + id: Long
+        + address: String
+        + name: String
+    }
+    class DeliveryDetails {
+        + id: Long
+        + deliveryDate: LocalDateTime
+        + order: Order
+    }
+    class NonDeliveryDetails {
+        + id: Long
+        + scheduledDate: LocalDateTime
+        + order: Order
+        + reason: String
+    }
+    class Review {
+        + id: Long
+        + rating: int
+        + content: String
+        + customerName: String
+        + product: Product
+    }
+}
+
+' Color definitions for arrows
+!define PRODUCT_COLOR #FF0000
+!define ORDER_COLOR   #0000FF
+!define PAYMENT_COLOR #009900
+!define COMPANY_COLOR #FF9900
+!define DELIVERY_COLOR #9900FF
+!define REVIEW_COLOR  #00CCCC
+
+' Controller to Service relations
+ProductController -[PRODUCT_COLOR]-> ProductService
+OrderController -[ORDER_COLOR]-> OrderService
+PaymentController -[PAYMENT_COLOR]-> PaymentService
+CompanyController -[COMPANY_COLOR]-> CompanyService
+DeliveryController -[DELIVERY_COLOR]-> DeliveryService
+ReviewController -[REVIEW_COLOR]-> ReviewService
+
+' Service Implementation to Service Interface relations
+ProductServiceImpl .-[PRODUCT_COLOR].> ProductService
+OrderServiceImpl .-[ORDER_COLOR].> OrderService
+PaymentServiceImpl .-[PAYMENT_COLOR].> PaymentService
+CompanyServiceImpl .-[COMPANY_COLOR].> CompanyService
+DeliveryServiceImpl .-[DELIVERY_COLOR].> DeliveryService
+ReviewServiceImpl .-[REVIEW_COLOR].> ReviewService
+
+' Service Implementation to Repository relations
+ProductServiceImpl -[PRODUCT_COLOR]-> ProductRepository
+OrderServiceImpl -[ORDER_COLOR]-> OrderRepository
+PaymentServiceImpl -[PAYMENT_COLOR]-> PaymentRepository
+CompanyServiceImpl -[COMPANY_COLOR]-> CompanyRepository
+DeliveryServiceImpl -[DELIVERY_COLOR]-> DeliveryRepository
+DeliveryServiceImpl -[DELIVERY_COLOR]-> NonDeliveryRepository
+ReviewServiceImpl -[REVIEW_COLOR]-> ReviewRepository
+
+' Repositories related to models
+ProductRepository ..> Product
+OrderRepository ..> Order
+PaymentRepository ..> Payment
+CompanyRepository ..> Company
+DeliveryRepository ..> DeliveryDetails
+NonDeliveryRepository ..> NonDeliveryDetails
+ReviewRepository ..> Review
+
+' Model relationships
+Order --> Product
+Order --> Payment
+DeliveryDetails --> Order
+NonDeliveryDetails --> Order
+Review --> Product
+
+@enduml
